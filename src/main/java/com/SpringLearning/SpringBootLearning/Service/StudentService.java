@@ -2,27 +2,48 @@ package com.SpringLearning.SpringBootLearning.Service;
 
 import com.SpringLearning.SpringBootLearning.Model.StudentModel;
 import org.springframework.stereotype.Service;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class StudentService {
-    private final List<StudentModel> database = new ArrayList<>();
-    private int nextId = 1;
-    public boolean createStudent(StudentModel student) {
-        if (student.getStudentid() == 0) {  // auto-generate ID
-            student.setStudentid(nextId++);
-        }
-        return database.add(student);
-    }
-    public List<StudentModel> retrieveAll() {
-        return new ArrayList<>(database);
-    }
-    public Optional<StudentModel> findById(int id) {
-        return database.stream()
-                .filter(s -> s.getStudentid() == id)
-                .findFirst();
+
+    private List<StudentModel> students = new ArrayList<>();
+
+    public StudentService() {
+        students.add(new StudentModel(1, "Karuppasamy", "ECE", "Chennai", 22));
+        students.add(new StudentModel(2, "Kapil", "CIVIL", "Coimbatore", 22));
+        students.add(new StudentModel(3, "Suresh", "ECE", "Madurai", 22));
     }
 
-    public boolean removeStudent(int id) {
-        return database.removeIf(s -> s.getStudentid() == id);
+    public List<StudentModel> getAllStudents() {
+        return students;
+    }
+
+    public String addStudent(StudentModel student) {
+        students.add(student);
+        return "Student added successfully!";
+    }
+
+    public List<StudentModel> updateStudent(long id, StudentModel updatedStudent) {
+        for (StudentModel s : students) {
+            if (s.getId() == id) {
+                s.setName(updatedStudent.getName());
+                s.setDepartment(updatedStudent.getDepartment());
+                s.setAddress(updatedStudent.getAddress());
+                s.setAge(updatedStudent.getAge());
+                break;
+            }
+        }
+        return students;
+    }
+
+    public List<StudentModel> deleteStudent(long id) {
+        students = students.stream()
+                .filter(s -> s.getId() != id)
+                .collect(Collectors.toList());
+        return students;
     }
 }

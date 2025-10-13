@@ -2,41 +2,37 @@ package com.SpringLearning.SpringBootLearning.Controller;
 
 import com.SpringLearning.SpringBootLearning.Model.StudentModel;
 import com.SpringLearning.SpringBootLearning.Service.StudentService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/students")
+@RequestMapping("/api/v1/student/")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
-    @PostMapping("/add")
-    public ResponseEntity<String> createStudent(@Valid @RequestBody StudentModel student) {
-        boolean created = studentService.createStudent(student);
-        return created
-                ? ResponseEntity.ok("Student added successfully: " + student.getStudentname())
-                : ResponseEntity.badRequest().body("Failed to add student");
+
+    @GetMapping("getAllStudents")
+    public ResponseEntity<List<StudentModel>> getAllStudents() {
+        return new ResponseEntity<>(studentService.getAllStudents(), HttpStatus.OK);
     }
-    @GetMapping("/all")
-    public List<StudentModel> getAllStudents() {
-        return studentService.retrieveAll();
+
+    @PostMapping("addStudent")
+    public ResponseEntity<String> addStudent(@RequestBody StudentModel student) {
+        return new ResponseEntity<>(studentService.addStudent(student), HttpStatus.CREATED);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getStudentById(@PathVariable int id) {
-        return studentService.findById(id)
-                .<ResponseEntity<?>>map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(404).body(" Student not found with ID: " + id));
+
+    @PutMapping("modifyStudent/{id}")
+    public ResponseEntity<List<StudentModel>> modifyStudent(@PathVariable long id, @RequestBody StudentModel student) {
+        return new ResponseEntity<>(studentService.updateStudent(id, student), HttpStatus.OK);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
-        boolean removed = studentService.removeStudent(id);
-        return removed
-                ? ResponseEntity.ok("Student deleted successfully")
-                : ResponseEntity.status(404).body("Student not found with ID: " + id);
+
+    @DeleteMapping("recordDelete/{id}")
+    public ResponseEntity<List<StudentModel>> deleteStudent(@PathVariable long id) {
+        return new ResponseEntity<>(studentService.deleteStudent(id), HttpStatus.OK);
     }
 }
