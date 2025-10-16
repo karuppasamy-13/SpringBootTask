@@ -1,16 +1,30 @@
-package com.SpringLearning.SpringBootLearning.Model;
+package com.SpringLearning.SpringBootLearning.Entity;
 
-public class StudentDTO {
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "student")
+public class Student {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "studentName")
     private String studentName;
+
+    @Column(name = "department")
     private String department;
+
+    @Column(name = "result")
     private String result;
+
+    @Column(name = "location")
     private String location;
 
-    public StudentDTO() {}
+    public Student() {}
 
-    public StudentDTO(Long id, String studentName, String department, String result, String location) {
+    public Student(Long id, String studentName, String department, String result, String location) {
         this.id = id;
         this.studentName = studentName;
         this.department = department;
@@ -20,7 +34,7 @@ public class StudentDTO {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-g
+
     public String getStudentName() { return studentName; }
     public void setStudentName(String studentName) { this.studentName = studentName; }
 
